@@ -36,10 +36,6 @@ select max(salary), min(salary)
 -- 문제6.
 -- 최고 어린 사원의 나이와 최 연장자의 나이는?
 
-SELECT FLOOR((CAST(REPLACE(CURRENT_DATE,'-','') AS UNSIGNED) - CAST(REPLACE(max(birth_date),'-','') AS UNSIGNED)) / 10000 ) as '어린 사원',
-     FLOOR((CAST(REPLACE(CURRENT_DATE,'-','') AS UNSIGNED) - CAST(REPLACE(min(birth_date),'-','') AS UNSIGNED)) / 10000 ) as '연장자'
-from employees;
-
 select floor((cast(replace(current_date,'-','') as unsigned) - cast(replace(max(birth_date),'-','') as unsigned)) / 10000) as '어린 사원',
 	   floor((cast(replace(current_date,'-','')as unsigned) - cast(replace(min(birth_date),'-','')as unsigned))/ 10000) as '연장자'
 from employees;
