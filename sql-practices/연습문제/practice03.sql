@@ -64,17 +64,54 @@ where a.emp_no = d.emp_no
 -- 문제7.
 -- 현재, 직책이 Engineer인 사원 중에서 현재 급여가 40000 이상인 사원을 급여가 큰 순서대로 출력하세요.
 
-select*
- from salaries a, titles b
-
-
-
+select c.first_name , a.salary
+ from salaries a, titles b, employees c
+where a.emp_no = b.emp_no
+  and b.emp_no = c.emp_no
+  and a.salary >= 4000
+  and b.title = 'Engineer'
+  and a.to_date = '9999-01-01'
+  and b.to_date = '999-01-01'
+  order by a.salary desc;
 
 -- 문제8.
 -- 현재 급여가 50000이 넘는 직책을 직책, 급여로 급여가 큰 순서대로 출력하시오
 
+select b.title , a.salary
+ from salaries a, titles b
+ where a.emp_no = b.emp_no
+   and a.salary > 50000
+   and a.to_date = '9999-01-01'
+   and b.to_date = '9999-01-01'
+   order by a.salary desc;
+
+
 -- 문제9.
--- 현재, 부서별 평균 연봉을 연봉이 큰 부서 순서대로 출력하세요.
+-- 현재, 부서별 평균 연봉을 연봉이 큰 부서 순서대로 출력하세요. 
+-- ~~별 -> group by 사용
+
+select a.dept_name, avg(c.salary)
+ from departments a, dept_emp b, salaries c
+  where a.dept_no = b.dept_no
+    and b.emp_no = c.emp_no
+    and b.to_date = '9999-01-01'
+    and c.to_date = '9999-01-01'
+    group by a.dept_name
+    order by avg(c.salary) desc;
 
 -- 문제10.
 -- 현재, 직책별 평균 연봉을 연봉이 큰 직책 순서대로 출력하세요.   
+
+select a.title, avg(b.salary)
+ from titles a, salaries b
+where a.emp_no = b.emp_no
+and a.to_date = '9999-01-01'
+and b.to_date = '9999-01-01'
+group by a.title
+order by avg(b.salary) desc;
+
+
+
+
+
+
