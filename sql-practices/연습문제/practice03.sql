@@ -71,7 +71,7 @@ where a.emp_no = b.emp_no
   and a.salary >= 4000
   and b.title = 'Engineer'
   and a.to_date = '9999-01-01'
-  and b.to_date = '999-01-01'
+  and b.to_date = '9999-01-01'
   order by a.salary desc;
 
 -- 문제8.

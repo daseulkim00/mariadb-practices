@@ -47,7 +47,23 @@ group by a.dept_no;
 -- 문제3.
 -- 현재, 자신의 부서 평균 급여보다 연봉(salary)이 많은 사원의 사번, 이름과 연봉을 조회하세요 
 
-
+select a.emp_no, a.first_name, b.salary           -- 왜안댐
+ from employees a, salaries b , dept_emp c, 
+             (select b.dept_no, avg(a.salary) as avg_salary  -- 부서의 평균 급여
+             from salaries a, dept_emp b, employees c
+            where a.emp_no = b.emp_no
+                 and b.emp_no = c.emp_no
+             and a.to_date = '9999-01-01'
+             and b.to_date = '9999-01-01'
+            group by b.dept_no) d
+where a.emp_no = b.emp_no
+ and a.emp_no = c.emp_no
+ and b.salary = d.avg_salary
+ and c.dept_no = d.dept_no
+ and b.salary > d.avg_salary
+ and b.to_date = '9999-01-01'
+ and c.to_date = '9999-01-01';
+ 
 -- 문제4.
 -- 현재, 사원들의 사번, 이름, 매니저 이름, 부서 이름으로 출력해 보세요.
 

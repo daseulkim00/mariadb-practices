@@ -2,6 +2,14 @@
 select avg(salary)
  from salaries;
  
+ select avg(salary), sum(salary)
+ from salaries
+ where emp_no ='10060';
+ 
+  select min(salary), max(salary)
+ from salaries
+ where emp_no ='10060';
+ 
  -- select 절에 그룹 함수가 있는 경우, 어떤 컬럼도 select 절에 올 수 없다.
  -- emp_no는 아무 의미가 없다.alter
  -- 오류!!!!
@@ -24,7 +32,27 @@ select avg(salary)
 select emp_no, avg(salary) 
    from salaries
 group by emp_no;
- 
+
+SELECT emp_no, COUNT(title)    
+   FROM titles
+   GROUP BY emp_no;
+
+ SELECT emp_no, AVG(salary)    
+ FROM salaries
+GROUP BY emp_no
+having AVG(salary) > 50000;
+
+
+
+
+
+select emp_no ,count(title) , avg(salary)
+from salaries
+group by emp_no
+having count(title) >= 100;
+
+
+
  -- having 
  -- 집계결과(결과 임시 테이블) row 선택해야 하는 경우
  -- 이미 where절은 실행이 되었기 때문에 having절에서 조건을 주어야 한다.

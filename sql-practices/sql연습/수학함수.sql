@@ -3,7 +3,7 @@
 -- abs
 select abs(-1), abs(1);
 
--- mode
+-- mod
 select mod(10,3);
 
 -- floor

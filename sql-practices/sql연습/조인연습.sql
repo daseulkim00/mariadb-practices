@@ -14,7 +14,6 @@ select a.first_name, b.title
   and a.gender = 'f'             -- row 선택 조건2
   and b.title ='engineer';       -- row 선택 조건3
   
-  
   --
 -- ANSI/ISO SQL1999 JOIN 표준 문법
 --
@@ -37,6 +36,139 @@ select a.first_name, b.title
 	select a.first_name, b.title
      from employees a join titles b on a .emp_no = b.emp_no
 where b.to_date = '9999-01-01'; -- row 선택조건
+
+
+-- outer join
+
+-- insert into dept values(null, '총무');
+-- insert into dept values(null, '영업');
+-- insert into dept values(null, '개발');
+-- insert into dept values(null, '기획');
+select * from dept;
+-- insert into emp values(null, '둘리', 1);
+-- insert into emp values(null, '마이콜', 2);
+-- insert into emp values(null, '또치', 3);
+-- insert into emp values(null, '길동', null);
+select * from emp;
+
+select a.name as '이름', b.name as '부서'
+  from emp a join dept b on a.dept_no = b.no;
+  
+select a.name as '이름', ifnull(b.name, '없음') as '부서'
+  from emp a left join dept b on a.dept_no = b.no;
+
+select a.name as '이름', b.name as '부서'
+  from emp a right join dept b on a.dept_no = b.no;
+ 
+-- 실습문제1
+-- 현재 회사 상황을 반영한 직원별 (group by) 근무부서를  사번, 직원 전체이름, 근무부서 형태로 출력해 보세요.
+
+select a.emp_no, a.first_name, c.dept_name
+ from employees a, dept_emp b, departments c
+where a.emp_no = b.emp_no
+  and b.dept_no = c.dept_no
+  and b.to_date ='9999-01-01';
+-- 선생님
+select a.emp_no, a.first_name, c.dept_name
+ from employees a, dept_emp b, departments c
+where a.emp_no = b.emp_no
+ and b.dept_no = c.dept_no
+ and b.to_date = '9999-01-01';
+ 
+ -- 실습문제2
+ -- 현재 회사에서 지급 되고 있는 급여체계를 반영한 결과를 출력하세요.
+ -- 사번, 이름, 연봉 형태로 출력하세요.alter
+ 
+ select a.emp_no, a.first_name, b.salary
+  from employees a, salaries b
+   where a.emp_no = b.emp_no
+     and b.to_date = '9999-01-01';
+ -- 선생님
+ select a.emp_no, a.first_name, b.salary
+  from employees a, salaries b
+  where a.emp_no = b.emp_no
+  and b.to_date = '9999-01-01'
+  order by b.salary desc;
+ 
+ -- ppt 109페이지
+ -- 예제 5번
+ -- 현재 직책별로 평균 연봉과 인원수를 구하되 직책별로 인원이 100명 이상인 직책만 출력하세요.  // 샐러리랑 타이틀에 프로데이트가있어서 네츄럴 조인 을 쓰면안댐
+
+  select a.title, avg(salary), count(*)
+  from titles a, salaries b
+where a.emp_no = b.emp_no
+   and a.to_date = '9999-01-01'
+   and b.to_date = '9999-01-01'
+  group by a.title
+  having count(*) > 100;
+ -- 선생님
+ select a.title, avg(salary), count(*)
+  from titles a, salaries b
+where a.emp_no = b.emp_no
+   and a.to_date = '9999-01-01'
+   and b.to_date = '9999-01-01'
+  group by a.title
+  having count(*) > 100;
+  -- order by avg(salary) desc; 평균 연봉이 제일 많은 직급 나열
+  
+  -- 예제 6 
+  -- 현재 부서별로 현재 직책이 Engineer인 직원들에 대해서만 평균급여를 구하세요.
+  
+  select b.dept_name, avg(c.salary)
+   from dept_emp a, departments b, salaries c, titles d
+   where a.emp_no = c.emp_no
+     and c.emp_no = d.emp_no
+     and a.dept_no = b.dept_no
+     and a.to_date = '9999-01-01'
+     and c.to_date = '9999-01-01'
+     and d.to_date = '9999-01-01'
+     and d.title ='Engineer'
+     group by b.dept_name;  -- 부서별로 
+     
+-- 선생님
+  select d.dept_name, avg(b.salary)
+   from dept_emp a, salaries b, titles c, departments d
+   where a.emp_no = b.emp_no
+    and b.emp_no = c.emp_no
+    and a.dept_no = d.dept_no
+    and a.to_date = '9999-01-01'
+    and b.to_date = '9999-01-01'
+    and c.to_date = '9999-01-01'
+    and c.title = 'Engineer'
+  group by d.dept_name;    
+  
+  
+  -- 예제 7
+  -- 현재 직책별로 급여의 총합을 구하되 Engineer 직책은 제외하세요.
+  -- 단, 총합이 2,000,000,000이상인 직책만 나타내며 급여총합에 대해서 내림차순(DESC)로 정렬하세요.   
+
+  select a.title, sum(b.salary)
+   from titles a, salaries b
+   where a.emp_no = b.emp_no
+     and a.to_date = '9999-01-01'
+     and b.to_date = '9999-01-01'
+     and a.title != 'Engineer'
+     group by a.title
+      having sum(b.salary) > 2000000000
+	order by sum(b.salary) desc;
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  select a.title , sum(b.salary) as sum_salary
+    from titles a, salaries b
+   where a.amp_no = b.amp_no
+    and a.to_date = '9999-01-01'
+    and b.to_date = '9999-01-01'
+    and a.title != 'Engineer'
+   group by a.title
+   having sum_salary > 200000000
+   order by sum_salary desc;
 
 
 
