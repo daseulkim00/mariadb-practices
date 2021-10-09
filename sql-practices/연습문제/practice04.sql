@@ -108,7 +108,7 @@ group by a.dept_no
 order by avg(b.salary) desc
 limit 0,1;
 
--- 2. 부서의 사원들의 사번, 이름,직책연봉을 조회 연봉순 출력
+-- 2. 부서의 사원들의  사번, 이름,직책연봉을 조회 연봉순 출력
 select d.dept_no as '부서번호', a.emp_no as '사번', concat(a.first_name, ' ', a.last_name) as'이름', b.title as '직책', c.salary as '연봉'
  from employees a, titles b, salaries c, dept_emp d
 where a.emp_no = b.emp_no
