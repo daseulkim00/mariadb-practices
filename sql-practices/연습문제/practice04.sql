@@ -170,7 +170,7 @@ where s.emp_no = t.emp_no
 -- 부서이름, 사원이름, 연봉, 매니저 이름, 메니저 연봉 순으로 출력합니다.
 
 select*
- from departments d, employees e, salaries s, 
+ from departments d, employees e, salaries s;
 
 
 

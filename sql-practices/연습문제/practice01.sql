@@ -22,6 +22,8 @@ order by hire_date;
 -- 여직원과 남직원은 각 각 몇 명이나 있나요?
 -- 집계함수로하면 한줄로 나타날수 있다 
 
+select count(case when gender = 'F' then 1 end) as '여직원', count(case when gender = 'M' then 1 end) as '남직원'
+ from employees;
 
 
 -- 문제4.
