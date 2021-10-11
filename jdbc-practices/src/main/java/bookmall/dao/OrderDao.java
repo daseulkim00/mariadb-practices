@@ -1,4 +1,4 @@
-package bookshop.dao;
+package bookmall.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,59 +8,66 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import bookshop.vo.AuthorVo;
+import bookmall.vo.OrderVo;
 
-public class AuthorDao {
+public class OrderDao {
 
+	// connection
 	private Connection getConnection() throws SQLException {
+
 		Connection conn = null;
 		try {
-			// 1. JDBC Driver 로딩
 			Class.forName("org.mariadb.jdbc.Driver");
 
-			// 2. 연결하기
-			String url = "jdbc:mysql://127.0.0.1:3306/webdb?charset=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패:" + e);
-		}
+			String url = "jdbc:mysql://127.0.0.1:3306/bookmall?charset=utf-8";
+			conn = DriverManager.getConnection(url, "bookmall", "bookmall");
 
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이브 로딩 실패" + e);
+		}
 		return conn;
+
 	}
 
 	// select
-	public List<AuthorVo> findAll() {
-		List<AuthorVo> result = new ArrayList<>();
+	public List<OrderVo> findAll() {
+		List<OrderVo> list = new ArrayList<>();
 
 		Connection conn = null;
-		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-
+		PreparedStatement pstmt = null;
 		try {
 			conn = getConnection();
 
-			// 3. SQL 준비
-			String sql = "select no, name from author";
+			String sql = " select a.no , a.order_no, a.pay_amt, a.ship, b.no as memberNo" + "  from `order` a, member b"
+					+ "  where a.member_no = b.no";
+
 			pstmt = conn.prepareStatement(sql);
 
-			// 4. 바인딩(binding)
-
-			// 5. SQL 실행
 			rs = pstmt.executeQuery();
+
 			while (rs.next()) {
 				Long no = rs.getLong(1);
-				String name = rs.getString(2);
+				Long orderNo = rs.getLong(2);
+				Long payAmt = rs.getLong(3);
+				String ship = rs.getString(4);
+				Long memberNo = rs.getLong(5);
 
-				AuthorVo vo = new AuthorVo();
+				OrderVo vo = new OrderVo();
 				vo.setNo(no);
-				vo.setName(name);
+				vo.setOrderNo(orderNo);
+				vo.setPayAmt(payAmt);
+				vo.setShip(ship);
+				vo.setMemberNo(memberNo);
 
-				result.add(vo);
+				list.add(vo);
+
 			}
+
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
-			// clean up
+
 			try {
 				if (rs != null) {
 					rs.close();
@@ -75,33 +82,34 @@ public class AuthorDao {
 				e.printStackTrace();
 			}
 		}
-
-		return result;
+		return list;
 	}
 
-	public boolean insert(AuthorVo vo) {
-		boolean result = false;
+	// insert
+
+	public void insert(OrderVo vo) {
+
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		try {
 			conn = getConnection();
 
-			// 3. SQL 준비
-			String sql = "insert into author values(null, ?)";
+			String sql = " insert into `order` value(null,?,?,?,?)";
+
 			pstmt = conn.prepareStatement(sql);
 
-			// 4. 바인딩(binding)
-			pstmt.setString(1, vo.getName());
+			pstmt.setLong(1, vo.getOrderNo());
+			pstmt.setLong(2, vo.getPayAmt());
+			pstmt.setString(3, vo.getShip());
+			pstmt.setLong(4, vo.getMemberNo());
 
-			// 5. SQL 실행
-			int count = pstmt.executeUpdate();
+			pstmt.executeUpdate();
 
-			result = count == 1;
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
-			// clean up
+
 			try {
 				if (pstmt != null) {
 					pstmt.close();
@@ -113,8 +121,5 @@ public class AuthorDao {
 				e.printStackTrace();
 			}
 		}
-
-		return result;
 	}
-
 }

@@ -2,22 +2,20 @@ package test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.print.DocFlavor.STRING;
 
 public class DeleteTest02 {
 
 	public static void main(String[] args) {
-		Boolean result =  delete(5L);
+		Boolean result =  delete(9L);
 		System.out.println(result ? "성공" : "실패");
 	}
 
 	private static Boolean delete(long no) {
 		boolean result = false;
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		
 		try {
 			// 1. JDBC Driver 로딩
@@ -28,13 +26,14 @@ public class DeleteTest02 {
 			conn = DriverManager.getConnection(url, "hr", "hr");
 			
 			//3. SQL 준비
-			String sql = "delete from "
-			//3. Statement 생성
-			stmt = conn.createStatement();
+			String sql = "delete from dept where no=?";
+			pstmt = conn.prepareStatement(sql);
 			
-			//4. SQL 실행
-			String sql = "delete from dept where no=" + no;
-			int count = stmt.executeUpdate(sql);
+			//4. binding
+			pstmt.setLong(1, no);
+			
+			//5. SQL 실행
+			int count = pstmt.executeUpdate();
 			
 			result = count == 1;
 		} catch (ClassNotFoundException e) {
@@ -44,8 +43,8 @@ public class DeleteTest02 {
 		} finally {
 			// clean up
 			try {
-				if(stmt != null) {
-					stmt.close();
+				if(pstmt != null) {
+					pstmt.close();
 				}
 				if(conn != null) {
 					conn.close();

@@ -1,13 +1,19 @@
 package bookshop.dao.test;
 
+import java.util.List;
+
+import bookshop.dao.AuthorDao;
 import bookshop.dao.BookDao;
+import bookshop.vo.AuthorVo;
 import bookshop.vo.BookVo;
 
 public class BookDaoTest {
 
 	public static void main(String[] args) {
-		// insertTest();
+		insertTest();
+		// findAllTest();
 	}
+	
 
 	private static void insertTest() {
 		BookVo vo = null;
